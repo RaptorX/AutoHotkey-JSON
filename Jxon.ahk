@@ -39,7 +39,7 @@ Jxon_Load(ByRef src, args*)
 			val := (proto := args[i]) ? new proto : {}
 			is_array? ObjPush(obj, val) : obj[key] := val
 			ObjInsertAt(stack, 1, val)
-			
+
 			is_arr[val] := !(is_key := ch == "{")
 			next := q . (is_key ? "}" : "{[]0123456789-tfn")
 		}
@@ -103,7 +103,7 @@ Jxon_Load(ByRef src, args*)
 			else ; number | true | false | null
 			{
 				val := SubStr(src, pos, i := RegExMatch(src, "[\]\},\s]|$",, pos)-pos)
-			
+
 			; For numerical values, numerify integers and keep floats as is.
 			; I'm not yet sure if I should numerify floats in v2.0-a ...
 				static number := "number", integer := "integer"
@@ -124,10 +124,10 @@ Jxon_Load(ByRef src, args*)
 			; any other values are invalid, continue to trigger error
 				else if (pos--, next := "#")
 					continue
-				
+
 				pos += i-1
 			}
-			
+
 			is_array? ObjPush(obj, val) : obj[key] := val
 			next := obj==tree ? "" : is_array ? ",]" : ",}"
 		}
@@ -179,7 +179,7 @@ Jxon_Dump(obj, indent:="", lvl:=1)
 		{
 			if IsObject(k) || (k == "")
 				throw Exception("Invalid object key.", -1, k ? Format("<Object at 0x{:p}>", &obj) : "<blank>")
-			
+
 			if !is_array
 				out .= ( ObjGetCapacity([k], 1) ? %this_fn%(k) : q . k . q ) ;// key
 				    .  ( indent ? ": " : ":" ) ; token + padding
@@ -193,12 +193,12 @@ Jxon_Dump(obj, indent:="", lvl:=1)
 			if (indent != "")
 				out := "`n" . indt . out . "`n" . SubStr(indt, StrLen(indent)+1)
 		}
-		
+
 		return is_array ? "[" . out . "]" : "{" . out . "}"
 	}
 
 	; Number
-	else if (ObjGetCapacity([obj], 1) == "")
+	else if obj is number
 		return obj
 
 	; String (null -> not supported by AHK)
@@ -217,7 +217,7 @@ Jxon_Dump(obj, indent:="", lvl:=1)
 		while RegExMatch(obj, needle, m)
 			obj := StrReplace(obj, m[0], Format("\u{:04X}", Ord(m[0])))
 	}
-	
+
 	return q . obj . q
 }
 
